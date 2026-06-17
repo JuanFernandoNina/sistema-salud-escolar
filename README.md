@@ -1,5 +1,11 @@
 # Sistema de Seguimiento de Salud Escolar
 
+Grupo 7 : 
+- Juan Fernando Nina Cachi
+- Axel Alberto Ticona Viilegas
+- Erick Brayan Lanchimba lanchimba
+
+
 Aplicacion de escritorio desarrollada en Python con Tkinter para administrar el seguimiento de salud de estudiantes en una unidad educativa. El sistema permite registrar estudiantes, personal de salud, controles medicos, citas, medicamentos, alertas y reclamos. Tambien incluye acceso separado para administradores y estudiantes.
 
 ## Vista general
@@ -47,7 +53,6 @@ sistema-salud-escolar/
   database/                       Conexion, esquema, seeder y repositorios
   models/                         Modelos de dominio
   services/                       Logica de negocio
-  utils/                          Utilidades auxiliares
   views/                          Vistas Tkinter
     admin/                        Pantallas del administrador
     estudiante/                   Pantallas del estudiante
@@ -81,7 +86,7 @@ Administrador:
 
 ```text
 Usuario: admin
-Password: Admin123!
+Password: admin
 ```
 
 Estudiantes:
