@@ -64,7 +64,7 @@ def seeder() -> None:
 
         logger.info("Ejecutando seeder...")
 
-        usuarios = [("admin", _hash("Admin123!"), "admin")]
+        usuarios = [("admin", _hash("admin"), "admin")]
         usuarios += [(nombre, _hash(password), "estudiante") for _ruat, nombre, *_rest, password in ESTUDIANTES]
         cur.executemany(
             "INSERT INTO usuarios (username, password_hash, rol) VALUES (?,?,?)",
@@ -223,7 +223,7 @@ def seeder() -> None:
 
         conn.commit()
         logger.info("Seeder completado exitosamente.")
-        logger.info("Admin: admin / Admin123!")
+        logger.info("Admin: admin / admin")
         logger.info("Estudiante de prueba: Juan / 12345678")
 
     except Exception as e:
