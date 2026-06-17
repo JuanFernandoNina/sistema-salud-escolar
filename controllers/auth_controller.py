@@ -30,9 +30,9 @@ class AuthController(BaseController):
             not_found_message="Credenciales de administrador invalidas.",
         )
 
-    def login_estudiante(self, codigo_ruat: str, password: str) -> Dict[str, Any]:
+    def login_estudiante(self, username: str, password: str) -> Dict[str, Any]:
         def action():
-            resultado = self._service.login_estudiante(codigo_ruat.strip(), password)
+            resultado = self._service.login_estudiante(username.strip(), password)
             if not resultado:
                 return None
             usuario, estudiante = resultado
@@ -43,7 +43,7 @@ class AuthController(BaseController):
         return self._handle(
             action,
             message="Login de estudiante exitoso.",
-            not_found_message="Codigo RUAT o password invalidos.",
+            not_found_message="Usuario o password invalidos.",
         )
 
     def cambiar_password(

@@ -11,7 +11,7 @@ from views.components import configure_styles
 
 
 class LoginView(BaseView):
-    """Login para administrador/docente y estudiante RUAT."""
+    """Login para administrador/docente y estudiante."""
 
     def __init__(
         self,
@@ -37,12 +37,12 @@ class LoginView(BaseView):
         modes = tk.Frame(card, bg=COLOR_WHITE)
         modes.pack(fill=tk.X, pady=(0, 12))
         ttk.Radiobutton(modes, text="Administrador", variable=self.mode, value="admin").pack(side=tk.LEFT, padx=(0, 14))
-        ttk.Radiobutton(modes, text="Estudiante RUAT", variable=self.mode, value="student").pack(side=tk.LEFT)
+        ttk.Radiobutton(modes, text="Estudiante", variable=self.mode, value="student").pack(side=tk.LEFT)
 
-        tk.Label(card, text="Usuario / RUAT", bg=COLOR_WHITE, font=FONT_NORMAL).pack(anchor="w")
+        tk.Label(card, text="Usuario", bg=COLOR_WHITE, font=FONT_NORMAL).pack(anchor="w")
         self.username = tk.Entry(card, width=34, font=FONT_NORMAL)
         self.username.pack(pady=(4, 10))
-        tk.Label(card, text="Password", bg=COLOR_WHITE, font=FONT_NORMAL).pack(anchor="w")
+        tk.Label(card, text="Password (RUAT)", bg=COLOR_WHITE, font=FONT_NORMAL).pack(anchor="w")
         self.password = tk.Entry(card, width=34, show="*", font=FONT_NORMAL)
         self.password.pack(pady=(4, 16))
         tk.Button(card, text="Ingresar", command=self._login, bg=COLOR_PRIMARY, fg=COLOR_WHITE, activebackground=COLOR_ACCENT, activeforeground=COLOR_WHITE, relief=tk.FLAT, font=FONT_BUTTON, padx=16, pady=8).pack(fill=tk.X)

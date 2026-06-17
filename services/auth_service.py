@@ -1,6 +1,6 @@
 """
 services/auth_service.py
-Servicio de autenticación: login Admin y login RUAT Estudiante.
+Servicio de autenticación: login Admin y login de Estudiante.
 
 Principios:
   - SRP  : única responsabilidad — autenticar usuarios.
@@ -50,31 +50,31 @@ class AuthService:
         logger.info(f"Login admin exitoso: {username}")
         return usuario
 
-    # ── Login Estudiante (RUAT) ───────────────────────────────────────────────
+    # ── Login Estudiante (nombre / RUAT) ─────────────────────────────────────
 
     def login_estudiante(
-        self, codigo_ruat: str, password: str
+        self, username: str, password: str
     ) -> Optional[Tuple[Usuario, Estudiante]]:
         """
-        Autentica un estudiante por código RUAT.
+        Autentica un estudiante por nombre de usuario.
+        La contraseña del estudiante es su código RUAT.
         Retorna (Usuario, Estudiante) si es válido, None si no.
         """
-        if not codigo_ruat or not password:
+        if not username or not password:
             return None
-        # El username del estudiante ES su código RUAT
-        usuario = self._usuario_repo.obtener_por_username(codigo_ruat)
+        usuario = self._usuario_repo.obtener_por_username(username)
         if not usuario or not usuario.es_estudiante():
-            logger.warning(f"Login estudiante fallido — RUAT: {codigo_ruat}")
+            logger.warning(f"Login estudiante fallido — usuario: {username}")
             return None
         if not self._verificar_password(password, usuario.password_hash):
-            logger.warning(f"Login estudiante fallido — password: {codigo_ruat}")
+            logger.warning(f"Login estudiante fallido — password: {username}")
             return None
         estudiante = self._estudiante_repo.obtener_por_usuario_id(usuario.id)
         if not estudiante:
-            logger.error(f"Usuario estudiante sin perfil: {codigo_ruat}")
+            logger.error(f"Usuario estudiante sin perfil: {username}")
             return None
         self._usuario_repo.actualizar_ultimo_acceso(usuario.id)
-        logger.info(f"Login estudiante exitoso: {codigo_ruat}")
+        logger.info(f"Login estudiante exitoso: {username}")
         return (usuario, estudiante)
 
     # ── Gestión de contraseñas ────────────────────────────────────────────────

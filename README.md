@@ -1,6 +1,6 @@
 # Sistema de Seguimiento de Salud Escolar
 
-Aplicacion de escritorio desarrollada en Python con Tkinter para administrar el seguimiento de salud de estudiantes en una unidad educativa. El sistema permite registrar estudiantes, personal de salud, controles medicos, citas, medicamentos, alertas y reclamos. Tambien incluye acceso separado para administradores y estudiantes mediante codigo RUAT.
+Aplicacion de escritorio desarrollada en Python con Tkinter para administrar el seguimiento de salud de estudiantes en una unidad educativa. El sistema permite registrar estudiantes, personal de salud, controles medicos, citas, medicamentos, alertas y reclamos. Tambien incluye acceso separado para administradores y estudiantes.
 
 ## Vista general
 
@@ -13,7 +13,7 @@ El proyecto esta orientado al control escolar de salud. Desde el panel administr
 ## Funcionalidades principales
 
 - Login para administrador.
-- Login para estudiante mediante codigo RUAT.
+- Login para estudiante mediante nombre de usuario y password RUAT.
 - Panel administrativo con indicadores generales.
 - Gestion de estudiantes.
 - Gestion de personal de salud.
@@ -23,7 +23,7 @@ El proyecto esta orientado al control escolar de salud. Desde el panel administr
 - Gestion de citas medicas escolares.
 - Gestion de medicamentos y control de stock minimo.
 - Generacion de alertas de salud.
-- Visualizacion de estadisticas.
+- Reportes por curso con distribucion nutricional e IMC promedio.
 - Panel de estudiante con perfil, historial, evolucion nutricional, citas, notificaciones y reclamos.
 - Base de datos SQLite incluida en `data/salud_escolar.db`.
 
@@ -73,7 +73,7 @@ Desde la carpeta raiz del proyecto:
 python main.py
 ```
 
-Al iniciar se muestra la pantalla de login. Se debe seleccionar el tipo de acceso: `Administrador` o `Estudiante RUAT`.
+Al iniciar se muestra la pantalla de login. Se debe seleccionar el tipo de acceso: `Administrador` o `Estudiante`.
 
 ## Credenciales de prueba
 
@@ -87,10 +87,15 @@ Password: Admin123!
 Estudiantes:
 
 ```text
-RUAT-001 / est001
-RUAT-002 / est002
-RUAT-003 / est003
+Juan / 12345678
+Ana / 23456781
+Diego / 34567812
+45678123 / 45678123
 ```
+
+Todos los estudiantes usan como usuario su nombre registrado. Para los datos de prueba, la contrasena de cada estudiante es su codigo RUAT numerico de 8 digitos.
+
+La base incluida tiene 24 estudiantes: 4 estudiantes por cada grado de `1ro` a `6to`.
 
 ## Base de datos
 
@@ -121,7 +126,7 @@ La estructura de tablas esta definida en `database/schema.py` y los datos inicia
 - `Citas`: programacion y seguimiento de citas.
 - `Medicamentos`: inventario y stock minimo.
 - `Alertas`: revision de alertas generadas por condiciones de salud.
-- `Estadisticas`: reportes visuales y resumenes.
+- `Reportes`: reportes por curso, IMC promedio y distribucion nutricional.
 
 ## Modulos del estudiante
 

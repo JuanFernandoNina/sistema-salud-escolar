@@ -25,7 +25,7 @@ class EstudianteService(BaseService[Estudiante]):
 
     def crear(self, datos: Dict[str, Any]) -> Estudiante:
         """
-        Crea un estudiante y su usuario asociado (login RUAT).
+        Crea un estudiante y su usuario asociado (login nombre / RUAT).
         datos debe incluir: codigo_ruat, nombre, apellido,
         fecha_nacimiento, sexo, grado, seccion, password (opcional).
         """
@@ -33,14 +33,18 @@ class EstudianteService(BaseService[Estudiante]):
             raise ValueError(f"El código RUAT '{datos['codigo_ruat']}' ya existe.")
 
         # Crear usuario de acceso para el estudiante
-        password = datos.get("password", datos.get("codigo_ruat", "est123"))
+        username = self._normalizar_username_estudiante(datos["nombre"])
+        if self._usuario_repo.existe_username(username):
+            raise ValueError(f"El usuario estudiante '{username}' ya existe.")
+
+        password = datos.get("password") or datos.get("codigo_ruat", "est123")
         password_hash = bcrypt.hashpw(
             password.encode(), bcrypt.gensalt()
         ).decode()
 
         from models.usuario import Usuario
         usuario = Usuario(
-            username=datos["codigo_ruat"],
+            username=username,
             password_hash=password_hash,
             rol="estudiante",
         )
@@ -65,17 +69,31 @@ class EstudianteService(BaseService[Estudiante]):
         estudiante = self._repo.obtener_por_id(id)
         if not estudiante:
             raise ValueError(f"Estudiante con id={id} no encontrado.")
+        if "nombre" in datos and estudiante.usuario_id:
+            username = self._normalizar_username_estudiante(datos["nombre"])
+            if self._usuario_repo.existe_username(username, excluir_id=estudiante.usuario_id):
+                raise ValueError(f"El usuario estudiante '{username}' ya existe.")
         for campo in ("nombre", "apellido", "fecha_nacimiento",
                       "sexo", "grado", "seccion",
                       "direccion", "telefono_tutor", "nombre_tutor"):
             if campo in datos:
                 setattr(estudiante, f"_{campo}", datos[campo])
-        return self._repo.guardar(estudiante)
+        estudiante = self._repo.guardar(estudiante)
+        self._sincronizar_usuario_estudiante(estudiante)
+        return estudiante
 
     def eliminar(self, id: int) -> bool:
-        if not self._repo.existe(id):
+        estudiante = self._repo.obtener_por_id(id)
+        if not estudiante:
             raise ValueError(f"Estudiante con id={id} no encontrado.")
-        return self._repo.eliminar(id)
+        eliminado = self._repo.eliminar(id)
+        if eliminado and estudiante.usuario_id:
+            usuario = self._usuario_repo.obtener_por_id(estudiante.usuario_id)
+            if usuario:
+                usuario.username = f"{usuario.username}_eliminado_{usuario.id}"
+                self._usuario_repo.guardar(usuario)
+            self._usuario_repo.eliminar(estudiante.usuario_id)
+        return eliminado
 
     def obtener_por_id(self, id: int) -> Optional[Estudiante]:
         return self._repo.obtener_por_id(id)
@@ -93,3 +111,22 @@ class EstudianteService(BaseService[Estudiante]):
 
     def obtener_por_ruat(self, ruat: str) -> Optional[Estudiante]:
         return self._repo.obtener_por_ruat(ruat)
+
+    def _normalizar_username_estudiante(self, nombre: str) -> str:
+        username = (nombre or "").strip()
+        if not username:
+            raise ValueError("El nombre del estudiante es obligatorio para crear su usuario.")
+        return username
+
+    def _sincronizar_usuario_estudiante(self, estudiante: Estudiante) -> None:
+        if not estudiante.usuario_id:
+            return
+        usuario = self._usuario_repo.obtener_por_id(estudiante.usuario_id)
+        if not usuario:
+            return
+        username = self._normalizar_username_estudiante(estudiante.nombre)
+        if self._usuario_repo.existe_username(username, excluir_id=usuario.id):
+            raise ValueError(f"El usuario estudiante '{username}' ya existe.")
+        if usuario.username != username:
+            usuario.username = username
+            self._usuario_repo.guardar(usuario)

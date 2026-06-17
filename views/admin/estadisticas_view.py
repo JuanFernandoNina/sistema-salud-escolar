@@ -27,7 +27,7 @@ class EstadisticasView(BaseView):
         super().__init__(parent, controller or ReporteController())
 
     def _build_ui(self):
-        header(self._frame, "Estadisticas por curso", "Reporte nutricional agrupado por grado.")
+        header(self._frame, "Reportes por curso", "Reporte nutricional agrupado por grado.")
         top = tk.Frame(self._frame, bg=self._frame["bg"])
         top.pack(fill=tk.X, padx=20, pady=(0, 10))
         tk.Label(top, text="Grado:", bg=self._frame["bg"]).pack(side=tk.LEFT)

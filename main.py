@@ -5,6 +5,8 @@ from tkinter import messagebox
 
 from config.settings import APP_HEIGHT, APP_NAME, APP_WIDTH, COLOR_GRAY
 from database.connection import get_db
+from database.schema import crear_tablas
+from database.seeder import seeder
 from views.admin import (
     AlertasView,
     CitasView,
@@ -42,10 +44,15 @@ class SaludEscolarApp:
         self.current_view = None
         self.shell = None
         self.content = None
+        self.init_database()
         self.show_login()
 
     def run(self) -> None:
         self.root.mainloop()
+
+    def init_database(self) -> None:
+        crear_tablas()
+        seeder()
 
     def clear_window(self) -> None:
         for child in self.root.winfo_children():
@@ -88,7 +95,7 @@ class SaludEscolarApp:
             ("Citas", lambda: self.show_view(CitasView)),
             ("Medicamentos", lambda: self.show_view(MedicamentosView)),
             ("Alertas", lambda: self.show_view(AlertasView)),
-            ("Estadisticas", lambda: self.show_view(EstadisticasView)),
+            ("Reportes", lambda: self.show_view(EstadisticasView)),
         ]
         nombre = usuario.get("username") or "Administrador"
         self.build_shell(f"Admin\n{nombre}", items)
